@@ -391,9 +391,8 @@
             const iconFileName = weatherCodeMap[weatherCode] ? weatherCodeMap[weatherCode].favicon : 'question_mark';
 
             // Set the favicon href to the local file path.
-            // Assuming your downloaded SVG icons are in 'icons/favicons/' folder.
-            faviconLink.href = `icons/favicons/${iconFileName}.svg`; // Change to .png if you downloaded PNGs
-            faviconLink.type = 'image/svg+xml'; // Set type based on your file format (e.g., 'image/png')
+            faviconLink.href = `favicons/${iconFileName}.svg`;
+            faviconLink.type = 'image/svg+xml';
         }
 
         // Function to convert wind degrees to cardinal direction
