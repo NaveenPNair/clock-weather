@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather & Clock</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="icon" id="favicon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABMSURBVHgBnY4xCoAwEETf3xG3zK1TzBvo1NpsQnJ36rO+q3fBCEe6g+CgO2yqU05y1mY1p7zR8A22A9n+o9r/h+Uf93+B8/2LgQoAAAC+aK+k1U32C4bAAAAAElFTkSuQmCC">
+    <!-- Favicon link - Add an ID to easily target it with JavaScript -->
+    <!-- The initial href is a tiny transparent PNG, which will be immediately overwritten by JS -->
+    <!-- IMPORTANT: Make sure your downloaded icons are in 'icons/favicons/' relative to this HTML file -->
+    <link rel="icon" id="favicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3C/svg%3E">
+    <!-- Changed type to image/svg+xml as we'll be using SVG files -->
 
     <style>
         body {
@@ -170,12 +175,14 @@
 </head>
 <body>
     <div class="widget-container">
+        <!-- Clock and Date -->
         <div class="widget-tile gradient-1 clock-tile">
             <div id="clock-time" class="clock-time">--:--:-- --</div>
             <div id="clock-date" class="clock-date">Loading Date...</div>
             <div id="special-day" class="special-day hidden"></div>
         </div>
 
+        <!-- Current Weather -->
         <div class="widget-tile gradient-2">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xl font-semibold text-white">Current Weather</h3>
@@ -198,14 +205,17 @@
             <div id="current-weather-error" class="text-center text-red-400 hidden">Error loading weather.</div>
         </div>
 
+        <!-- 3-Day Forecast -->
         <div class="widget-tile gradient-3">
             <h3 class="text-xl font-semibold text-white mb-2">Next 3 Days Forecast</h3>
             <div id="forecast-display" class="flex flex-col">
-                </div>
+                <!-- Forecast items will be injected here by JS -->
+            </div>
             <div id="forecast-loading" class="text-center text-gray-400">Loading forecast...</div>
             <div id="forecast-error" class="text-center text-red-400 hidden">Error loading forecast.</div>
         </div>
 
+        <!-- Footer -->
         <div class="footer">
             Made with ❤️ by Naveen.
         </div>
@@ -303,6 +313,7 @@
         const TIMEZONE = 'Asia%2FKolkata';
 
         // Map Open-Meteo weather codes to emojis, descriptions, and FAVICON NAMES (updated with your list)
+        // These favicon names now correspond directly to your local SVG/PNG filenames (e.g., 'clear_day.svg')
         const weatherCodeMap = {
             0: { emoji: '☀️', description: 'Clear sky', favicon: 'clear_day' },
             1: { emoji: '🌤️', description: 'Mainly clear', favicon: 'clear_day' },
@@ -314,7 +325,7 @@
             53: { emoji: '🌧️', description: 'Moderate drizzle', favicon: 'rainy_light' },
             55: { emoji: '🌧️', description: 'Dense drizzle', favicon: 'rainy_light' },
             56: { emoji: '🌧️❄️', description: 'Light freezing drizzle', favicon: 'rainy_light' },
-            57: { emoji: '🌧️❄️', description: 'Dense freezing drizzle', favicon: 'rainy_light' },
+            57: { emoji: '�️❄️', description: 'Dense freezing drizzle', favicon: 'rainy_light' },
             61: { emoji: '☔', description: 'Slight rain', favicon: 'rainy_light' },
             63: { emoji: '🌧️', description: 'Moderate rain', favicon: 'rainy' },
             65: { emoji: '⛈️', description: 'Heavy rain', favicon: 'rainy_heavy' },
@@ -342,17 +353,15 @@
             return weatherCodeMap[code] ? weatherCodeMap[code].description : 'Unknown';
         }
 
-        // Function to update the favicon
+        // Function to update the favicon using local files
         function updateFavicon(weatherCode) {
             const faviconLink = document.getElementById('favicon');
-            // Get the specific icon name from your updated map
-            const iconName = weatherCodeMap[weatherCode] ? weatherCodeMap[weatherCode].favicon : 'question_mark';
+            // Get the specific icon file name from your updated map
+            const iconFileName = weatherCodeMap[weatherCode] ? weatherCodeMap[weatherCode].favicon : 'question_mark';
 
-            // Construct the URL for the Material Symbols icon as a favicon
-            // Using a specific version (v164) of the woff2 file from Google Fonts.
-            // The `text` parameter is crucial here to specify which icon glyph to render.
-            // `fill=1` makes the icon solid (filled) rather than outlined.
-            faviconLink.href = `https://fonts.gstatic.com/s/materialsymbolsoutlined/v164/kJFvBWEMp-mm5WnkfEE_EVdTYXJgZ.woff2?text=${iconName}&fill=1`;
+            // Set the favicon href to the local file path.
+            faviconLink.href = `favicons/${iconFileName}.svg`;
+            faviconLink.type = 'image/svg+xml';
         }
 
         async function fetchWeather() {
