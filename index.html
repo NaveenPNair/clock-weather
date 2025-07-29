@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather & Clock</title>
+    <title>Clock & Weather</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Favicon link - Add an ID to easily target it with JavaScript -->
     <!-- The initial href is a tiny transparent SVG, which will be immediately overwritten by JS -->
-    <!-- IMPORTANT: Make sure your downloaded icons are in 'icons/favicons/' relative to this HTML file -->
     <link rel="icon" id="favicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3C/svg%3E">
 
     <style>
@@ -97,6 +96,60 @@
             .weather-current-temp {
                 font-size: 2rem;
             }
+
+            /* Current Weather Details Grid - Now a flex column on mobile for consistent left alignment */
+            #current-weather-details-grid { /* Added ID to the parent div in HTML */
+                display: flex;
+                flex-direction: column;
+                gap: 10px; /* Space between each detail item (Wind, Humidity, etc.) */
+            }
+
+            .weather-detail-item {
+                display: flex;
+                align-items: center;
+                gap: 8px; /* Space between icon and text */
+                font-size: 1rem;
+                color: #cbd5e0;
+                /* No flex-basis or min-width needed here as they are stacked vertically */
+            }
+
+            .weather-detail-item > span:first-child { /* The emoji icon */
+                flex-shrink: 0; /* Prevent emoji from shrinking */
+            }
+
+            /* AQI Status fix for mobile - Now back on one line */
+            .aqi-container {
+                display: flex;
+                flex-direction: row; /* Back to row for one line display */
+                align-items: center; /* Vertically align items */
+                /* Removed gap: 5px; from here */
+                margin-left: 0; /* Reset any previous left margin */
+            }
+            .aqi-container #aqi-status {
+                margin-top: 0px; /* Reset margin */
+                font-size: 1rem; /* Back to normal font size */
+                margin-left: 10px; /* <--- INCREASED THIS VALUE for more spacing from '28' */
+            }
+
+            /* Ensure values like wind speed/direction/humidity stay on one line */
+            .weather-detail-item #wind-speed,
+            .weather-detail-item #wind-direction,
+            .weather-detail-item #humidity {
+                white-space: nowrap; /* Prevent these values from wrapping */
+            }
+
+            /* Forecast item alignment fix for mobile */
+            .weather-forecast-item {
+                display: grid; /* Use grid for better control */
+                grid-template-columns: auto 40px 1fr auto; /* Day, Emoji, Description (takes remaining space), Temp */
+                align-items: center; /* Vertically align items */
+                gap: 5px; /* Small gap between grid items */
+            }
+            .weather-forecast-item .weather-description-text {
+                white-space: normal; /* Allow text to wrap */
+                word-break: break-word; /* Break long words if necessary */
+                text-align: left;
+            }
         }
 
         /* Mobile Landscape adjustments: mimic desktop row layout */
@@ -127,6 +180,35 @@
             }
             .weather-current-temp {
                 font-size: 2.2rem;
+            }
+
+            /* Reset Current Weather Details Grid for landscape */
+            #current-weather-details-grid {
+                display: grid; /* Back to grid for landscape */
+                grid-template-columns: 1fr 1fr; /* Two columns */
+                gap-y: 2px; /* Restore original gap */
+                gap-x: 4px; /* Restore original gap */
+            }
+
+            /* Reset AQI and Forecast for landscape if needed, or let the default desktop styles apply */
+            .aqi-container {
+                flex-direction: row; /* Back to row for landscape */
+                align-items: center;
+                margin-left: 0; /* Reset margin */
+            }
+            .aqi-container #aqi-status {
+                margin-top: 0;
+                margin-left: 8px; /* Standard gap for landscape */
+            }
+            .weather-forecast-item {
+                display: flex; /* Back to flex for landscape */
+                justify-content: space-between;
+                align-items: center;
+                gap: 0; /* Remove gap set by grid */
+            }
+            .weather-forecast-item .weather-description-text {
+                white-space: nowrap; /* Prevent wrapping for landscape */
+                text-align: right; /* Default alignment */
             }
         }
 
@@ -226,11 +308,19 @@
                     <span id="weather-emoji" class="text-4xl"></span>
                     <span id="weather-description" class="text-xl font-medium text-gray-300"></span>
                 </div>
-                <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-sm">
+                <!-- Added ID for easier targeting in CSS -->
+                <div id="current-weather-details-grid" class="grid grid-cols-2 gap-y-2 gap-x-4 text-sm">
                     <div class="weather-detail-item"><span class="text-lg">💨</span> Wind: <span id="wind-speed">-- km/h</span> <span id="wind-direction"></span></div>
                     <div class="weather-detail-item"><span class="text-lg">💧</span> Humidity: <span id="humidity">--%</span></div>
                     <div class="weather-detail-item"><span class="text-lg">🌧️</span> Rainfall: <span id="rainfall">-- mm</span></div>
-                    <div class="weather-detail-item"><span class="text-lg">☁️</span> AQI: <span id="aqi">--</span> <span id="aqi-status"></span></div>
+                    <!-- Modified AQI display for better mobile alignment -->
+                    <div class="weather-detail-item">
+                        <span class="text-lg">☁️</span> AQI:
+                        <div class="aqi-container">
+                            <span id="aqi">--</span>
+                            <span id="aqi-status"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="current-weather-loading" class="text-center text-gray-400">Loading current weather...</div>
@@ -493,7 +583,7 @@
                     forecastItem.innerHTML = `
                         <span class="font-medium text-gray-200">${dayName}</span>
                         <span class="text-2xl">${getWeatherEmoji(weatherCode)}</span>
-                        <span class="text-gray-300">${getWeatherDescription(weatherCode)}</span>
+                        <span class="text-gray-300 weather-description-text">${getWeatherDescription(weatherCode)}</span>
                         <span class="font-semibold text-white">${maxTemp}°C / ${minTemp}°C</span>
                     `;
                     forecastDisplay.appendChild(forecastItem);
