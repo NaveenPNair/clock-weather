@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naveen's Dashboard Widget</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Weather & Clock</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="icon" id="favicon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABMSURBVHgBnY4xCoAwEETf3xG3zK1TzBvo1NpsQnJ36rO+q3fBCEe6g+CgO2yqU05y1mY1p7zR8A22A9n+o9r/h+Uf93+B8/2LgQoAAAC+aK+k1U32C4bAAAAAElFTkSuQmCC">
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            /* True black gradient background */
-            background: linear-gradient(135deg, #000000, #1a1a1a);
+            background: #000000; /* Solid black background */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -170,14 +170,12 @@
 </head>
 <body>
     <div class="widget-container">
-        <!-- Clock and Date -->
         <div class="widget-tile gradient-1 clock-tile">
             <div id="clock-time" class="clock-time">--:--:-- --</div>
             <div id="clock-date" class="clock-date">Loading Date...</div>
             <div id="special-day" class="special-day hidden"></div>
         </div>
 
-        <!-- Current Weather -->
         <div class="widget-tile gradient-2">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xl font-semibold text-white">Current Weather</h3>
@@ -200,17 +198,14 @@
             <div id="current-weather-error" class="text-center text-red-400 hidden">Error loading weather.</div>
         </div>
 
-        <!-- 3-Day Forecast -->
         <div class="widget-tile gradient-3">
             <h3 class="text-xl font-semibold text-white mb-2">Next 3 Days Forecast</h3>
             <div id="forecast-display" class="flex flex-col">
-                <!-- Forecast items will be injected here by JS -->
-            </div>
+                </div>
             <div id="forecast-loading" class="text-center text-gray-400">Loading forecast...</div>
             <div id="forecast-error" class="text-center text-red-400 hidden">Error loading forecast.</div>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
             Made with ❤️ by Naveen.
         </div>
@@ -307,37 +302,36 @@
         const LONGITUDE = 76.9366; // Thiruvananthapuram
         const TIMEZONE = 'Asia%2FKolkata';
 
-        // Map Open-Meteo weather codes to emojis and descriptions
+        // Map Open-Meteo weather codes to emojis, descriptions, and FAVICON NAMES (updated with your list)
         const weatherCodeMap = {
-            0: { emoji: '☀️', description: 'Clear sky' },
-            1: { emoji: '🌤️', description: 'Mainly clear' },
-            2: { emoji: '⛅', description: 'Partly cloudy' },
-            3: { emoji: '☁️', description: 'Overcast' },
-            45: { emoji: '🌫️', description: 'Fog' },
-            48: { emoji: '🌫️', description: 'Depositing rime fog' },
-            51: { emoji: '🌧️', description: 'Light drizzle' },
-            53: { emoji: '🌧️', description: 'Moderate drizzle' },
-            55: { emoji: '🌧️', description: 'Dense drizzle' },
-            56: { emoji: '🌧️', description: 'Light freezing drizzle' },
-            57: { emoji: '🌧️', description: 'Dense freezing drizzle' },
-            61: { emoji: '☔', description: 'Slight rain' },
-            63: { emoji: '🌧️', description: 'Moderate rain' },
-            65: { emoji: '⛈️', description: 'Heavy rain' },
-            66: { emoji: '🌧️❄️', description: 'Light freezing rain' },
-            67: { emoji: '🌧️❄️', description: 'Heavy freezing rain' },
-            71: { emoji: '🌨️', description: 'Slight snow fall' },
-            73: { emoji: '🌨️', description: 'Moderate snow fall' },
-            75: { emoji: '❄️', description: 'Heavy snow fall' },
-            77: { emoji: '❄️', description: 'Snow grains' },
-            80: { emoji: '⛈️', description: 'Slight rain showers' },
-            81: { emoji: '⛈️', description: 'Moderate rain showers' },
-            82: { emoji: '⛈️', description: 'Violent rain showers' },
-            85: { emoji: '🌨️', description: 'Slight snow showers' },
-            86: { emoji: '🌨️', description: 'Heavy snow showers' },
-            95: { emoji: '⚡⛈️', description: 'Thunderstorm' },
-            96: { emoji: '⚡⛈️', description: 'Thunderstorm with slight hail' },
-            99: { emoji: '⚡⛈️', description: 'Thunderstorm with heavy hail' },
-            // Add more as needed
+            0: { emoji: '☀️', description: 'Clear sky', favicon: 'clear_day' },
+            1: { emoji: '🌤️', description: 'Mainly clear', favicon: 'clear_day' },
+            2: { emoji: '⛅', description: 'Partly cloudy', favicon: 'partly_cloudy_day' },
+            3: { emoji: '☁️', description: 'Overcast', favicon: 'cloud' },
+            45: { emoji: '🌫️', description: 'Fog', favicon: 'foggy' },
+            48: { emoji: '🌫️', description: 'Depositing rime fog', favicon: 'foggy' },
+            51: { emoji: '🌧️', description: 'Light drizzle', favicon: 'rainy_light' },
+            53: { emoji: '🌧️', description: 'Moderate drizzle', favicon: 'rainy_light' },
+            55: { emoji: '🌧️', description: 'Dense drizzle', favicon: 'rainy_light' },
+            56: { emoji: '🌧️❄️', description: 'Light freezing drizzle', favicon: 'rainy_light' },
+            57: { emoji: '🌧️❄️', description: 'Dense freezing drizzle', favicon: 'rainy_light' },
+            61: { emoji: '☔', description: 'Slight rain', favicon: 'rainy_light' },
+            63: { emoji: '🌧️', description: 'Moderate rain', favicon: 'rainy' },
+            65: { emoji: '⛈️', description: 'Heavy rain', favicon: 'rainy_heavy' },
+            66: { emoji: '🌧️❄️', description: 'Light freezing rain', favicon: 'rainy_light' },
+            67: { emoji: '🌧️❄️', description: 'Heavy freezing rain', favicon: 'rainy_heavy' },
+            71: { emoji: '🌨️', description: 'Slight snow fall', favicon: 'snowing' },
+            73: { emoji: '🌨️', description: 'Moderate snow fall', favicon: 'rainy_snow' },
+            75: { emoji: '❄️', description: 'Heavy snow fall', favicon: 'snowing_heavy' },
+            77: { emoji: '❄️', description: 'Snow grains', favicon: 'weather_snowy' },
+            80: { emoji: '⛈️', description: 'Slight rain showers', favicon: 'rainy_light' },
+            81: { emoji: '⛈️', description: 'Moderate rain showers', favicon: 'rainy' },
+            82: { emoji: '⛈️', description: 'Violent rain showers', favicon: 'rainy_heavy' },
+            85: { emoji: '🌨️', description: 'Slight snow showers', favicon: 'sunny_snowing' },
+            86: { emoji: '🌨️', description: 'Heavy snow showers', favicon: 'snowing_heavy' },
+            95: { emoji: '⚡⛈️', description: 'Thunderstorm', favicon: 'thunderstorm' },
+            96: { emoji: '⚡⛈️', description: 'Thunderstorm with slight hail', favicon: 'thunderstorm' },
+            99: { emoji: '⚡⛈️', description: 'Thunderstorm with heavy hail', favicon: 'weather_hail' },
         };
 
         function getWeatherEmoji(code) {
@@ -346,6 +340,19 @@
 
         function getWeatherDescription(code) {
             return weatherCodeMap[code] ? weatherCodeMap[code].description : 'Unknown';
+        }
+
+        // Function to update the favicon
+        function updateFavicon(weatherCode) {
+            const faviconLink = document.getElementById('favicon');
+            // Get the specific icon name from your updated map
+            const iconName = weatherCodeMap[weatherCode] ? weatherCodeMap[weatherCode].favicon : 'question_mark';
+
+            // Construct the URL for the Material Symbols icon as a favicon
+            // Using a specific version (v164) of the woff2 file from Google Fonts.
+            // The `text` parameter is crucial here to specify which icon glyph to render.
+            // `fill=1` makes the icon solid (filled) rather than outlined.
+            faviconLink.href = `https://fonts.gstatic.com/s/materialsymbolsoutlined/v164/kJFvBWEMp-mm5WnkfEE_EVdTYXJgZ.woff2?text=${iconName}&fill=1`;
         }
 
         async function fetchWeather() {
@@ -376,6 +383,9 @@
                 document.getElementById('wind-speed').textContent = `${current.wind_speed_10m.toFixed(1)} km/h`;
                 document.getElementById('humidity').textContent = `${current.relative_humidity_2m}%`;
                 document.getElementById('rainfall').textContent = `${current.precipitation.toFixed(1)} mm`;
+
+                // *** Call the favicon update function with the current weather code ***
+                updateFavicon(current.weather_code);
 
                 // Fetch AQI
                 const aqiResponse = await fetch(`${AQI_API_URL}?latitude=${LATITUDE}&longitude=${LONGITUDE}&current=european_aqi&timezone=${TIMEZONE}`);
