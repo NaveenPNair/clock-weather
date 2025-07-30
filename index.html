@@ -24,6 +24,10 @@
             padding: 20px;
             box-sizing: border-box;
             color: #e2e8f0; /* Light text color */
+            user-select: none; /* Disable text selection */
+            -webkit-user-select: none; /* For Safari */
+            -moz-user-select: none; /* For Firefox */
+            -ms-user-select: none; /* For Internet Explorer/Edge */
         }
 
         .widget-container {
@@ -287,7 +291,7 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
     <div class="widget-container">
         <!-- Clock and Date -->
         <div class="widget-tile gradient-1 clock-tile">
@@ -350,7 +354,6 @@
         const requestWakeLock = async () => {
             try {
                 wakeLock = await navigator.wakeLock.request('screen');
-                console.log('Wake Lock is active!');
             } catch (err) {
                 console.error(`${err.name}, ${err.message}`);
             }
@@ -518,7 +521,8 @@
             try {
                 // Fetch current weather and 3-day forecast
                 // Added wind_direction_10m to the current parameters
-                const weatherResponse = await fetch(`${WEATHER_API_URL}?latitude=${LATITUDE}&longitude=${LONGITUDE}&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=${TIMEZONE}&forecast_days=4`);
+                // Changed 'precipitation' to 'precipitation_sum' in daily parameters for total daily rainfall
+                const weatherResponse = await fetch(`${WEATHER_API_URL}?latitude=${LATITUDE}&longitude=${LONGITUDE}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=${TIMEZONE}&forecast_days=4`);
                 const weatherData = await weatherResponse.json();
 
                 if (!weatherResponse.ok) {
@@ -540,7 +544,8 @@
                 windDirectionElement.textContent = getWindDirection(current.wind_direction_10m);
 
                 document.getElementById('humidity').textContent = `${current.relative_humidity_2m}%`;
-                document.getElementById('rainfall').textContent = `${current.precipitation.toFixed(1)} mm`;
+                // Display today's predicted total rainfall
+                document.getElementById('rainfall').textContent = `${daily.precipitation_sum[0].toFixed(1)} mm`;
 
                 // Call the favicon update function with the current weather code
                 updateFavicon(current.weather_code);
